@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HabitFlow – Your Daily Habit Tracker</title>
+    <meta name="description"
+        content="Track your daily habits, build streaks, and visualize your progress with HabitFlow – a beautiful habit tracker app." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <span class="logo-text">HabitFlow</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#9776;</button>
+        </div>
+
+        <div class="nav-section">
+            <p class="nav-label">OVERVIEW</p>
+            <ul class="nav-list">
+                <li><button class="nav-item active" data-view="today" id="navToday">
+                        <span class="nav-icon">✦</span>
+                        <span class="nav-text">Today</span>
+                    </button></li>
+                <li><button class="nav-item" data-view="habits" id="navHabits">
+                        <span class="nav-icon">⊞</span>
+                        <span class="nav-text">All Habits</span>
+                    </button></li>
+                <li><button class="nav-item" data-view="stats" id="navStats">
+                        <span class="nav-icon">◈</span>
+                        <span class="nav-text">Statistics</span>
+                    </button></li>
+                <li><button class="nav-item" data-view="history" id="navHistory">
+                        <span class="nav-icon">◷</span>
+                        <span class="nav-text">History</span>
+                    </button></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="streak-badge" id="globalStreakBadge">
+                <span class="streak-flame">🔥</span>
+                <div class="streak-info">
+                    <span class="streak-count" id="globalStreak">0</span>
+                    <span class="streak-label">day streak</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="mobile-menu-btn" id="mobileMenu" aria-label="Open menu">&#9776;</button>
+                <div class="page-title-wrap">
+                    <h1 class="page-title" id="pageTitle">Today's Habits</h1>
+                    <p class="page-subtitle" id="pageSubtitle">Let's build great habits ✨</p>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <span class="date-chip" id="todayDate"></span>
+                <button class="btn-primary" id="addHabitBtn">+ Add Habit</button>
+            </div>
+        </header>
+
+        <!-- Views -->
+        <div class="view-container">
+
+            <!-- TODAY VIEW -->
+            <section class="view active" id="view-today">
+                <div class="progress-ring-wrap">
+                    <div class="progress-card">
+                        <svg class="ring-svg" viewBox="0 0 120 120" id="progressRingSvg">
+                            <circle class="ring-bg" cx="60" cy="60" r="50" />
+                            <circle class="ring-fill" cx="60" cy="60" r="50" id="ringFill" />
+                        </svg>
+                        <div class="ring-label">
+                            <span class="ring-percent" id="ringPercent">0%</span>
+                            <span class="ring-sub">complete</span>
+                        </div>
+                    </div>
+                    <div class="today-meta">
+                        <div class="meta-stat">
+                            <span class="meta-val" id="metaDone">0</span>
+                            <span class="meta-lbl">Done</span>
+                        </div>
+                        <div class="meta-divider"></div>
+                        <div class="meta-stat">
+                            <span class="meta-val" id="metaTotal">0</span>
+                            <span class="meta-lbl">Total</span>
+                        </div>
+                        <div class="meta-divider"></div>
+                        <div class="meta-stat">
+                            <span class="meta-val" id="metaStreak">0</span>
+                            <span class="meta-lbl">Best Streak</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Habits for Today</h2>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="pending">Pending</button>
+                        <button class="filter-tab" data-filter="done">Done</button>
+                    </div>
+                </div>
+                <div class="habits-list" id="todayHabitsList">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="empty-state" id="todayEmpty">
+                    <div class="empty-icon">🌱</div>
+                    <h3>No habits yet!</h3>
+                    <p>Start your journey by adding your first habit.</p>
+                    <button class="btn-primary" onclick="document.getElementById('addHabitBtn').click()">Add
+                        Habit</button>
+                </div>
+            </section>
+
+            <!-- ALL HABITS VIEW -->
+            <section class="view" id="view-habits">
+                <div class="habits-grid" id="allHabitsGrid">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="empty-state" id="habitsEmpty">
+                    <div class="empty-icon">📋</div>
+                    <h3>No habits created yet</h3>
+                    <p>Add habits to start tracking your progress.</p>
+                    <button class="btn-primary" onclick="document.getElementById('addHabitBtn').click()">Add Your First
+                        Habit</button>
+                </div>
+            </section>
+
+            <!-- STATS VIEW -->
+            <section class="view" id="view-stats">
+                <div class="stats-grid">
+                    <div class="stat-card accent-purple">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-body">
+                            <span class="stat-number" id="statBestStreak">0</span>
+                            <span class="stat-name">Best Streak</span>
+                        </div>
+                    </div>
+                    <div class="stat-card accent-teal">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-body">
+                            <span class="stat-number" id="statTotalDone">0</span>
+                            <span class="stat-name">Total Completions</span>
+                        </div>
+                    </div>
+                    <div class="stat-card accent-orange">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-body">
+                            <span class="stat-number" id="statAvgRate">0%</span>
+                            <span class="stat-name">Avg. Completion Rate</span>
+                        </div>
+                    </div>
+                    <div class="stat-card accent-pink">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-body">
+                            <span class="stat-number" id="statHabitCount">0</span>
+                            <span class="stat-name">Active Habits</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Habit Performance</h2>
+                </div>
+                <div class="performance-list" id="performanceList">
+                    <!-- Per-habit performance bars -->
+                </div>
+            </section>
+
+            <!-- HISTORY VIEW -->
+            <section class="view" id="view-history">
+                <div class="section-header">
+                    <h2 class="section-title">Activity Heatmap</h2>
+                    <span class="heatmap-legend">
+                        <span class="legend-label">Less</span>
+                        <span class="heatmap-cell level-0"></span>
+                        <span class="heatmap-cell level-1"></span>
+                        <span class="heatmap-cell level-2"></span>
+                        <span class="heatmap-cell level-3"></span>
+                        <span class="heatmap-cell level-4"></span>
+                        <span class="legend-label">More</span>
+                    </span>
+                </div>
+                <div class="heatmap-container" id="heatmapContainer">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="section-header" style="margin-top:2rem;">
+                    <h2 class="section-title">Daily Log</h2>
+                </div>
+                <div class="daily-log" id="dailyLog">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+        </div><!-- end view-container -->
+    </main>
+
+    <!-- ADD / EDIT HABIT MODAL -->
+    <div class="modal-overlay" id="habitModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal" id="modalBox">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Habit</h2>
+                <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="habitName">Habit Name *</label>
+                    <input type="text" id="habitName" class="form-input" placeholder="e.g. Morning Run, Read 20 pages…"
+                        maxlength="60" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="habitDescription">Description (optional)</label>
+                    <textarea id="habitDescription" class="form-input form-textarea"
+                        placeholder="Why do you want to build this habit?" maxlength="200"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <div class="category-grid" id="categoryGrid">
+                            <button class="cat-btn active" data-cat="health">💪 Health</button>
+                            <button class="cat-btn" data-cat="mind">🧠 Mind</button>
+                            <button class="cat-btn" data-cat="productivity">⚡ Productivity</button>
+                            <button class="cat-btn" data-cat="social">🤝 Social</button>
+                            <button class="cat-btn" data-cat="finance">💰 Finance</button>
+                            <button class="cat-btn" data-cat="creative">🎨 Creative</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Color Tag</label>
+                        <div class="color-picker" id="colorPicker">
+                            <button class="color-dot active" data-color="#7C3AED" style="background:#7C3AED"
+                                aria-label="Purple"></button>
+                            <button class="color-dot" data-color="#0EA5E9" style="background:#0EA5E9"
+                                aria-label="Blue"></button>
+                            <button class="color-dot" data-color="#10B981" style="background:#10B981"
+                                aria-label="Green"></button>
+                            <button class="color-dot" data-color="#F59E0B" style="background:#F59E0B"
+                                aria-label="Amber"></button>
+                            <button class="color-dot" data-color="#EF4444" style="background:#EF4444"
+                                aria-label="Red"></button>
+                            <button class="color-dot" data-color="#EC4899" style="background:#EC4899"
+                                aria-label="Pink"></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Frequency</label>
+                        <select class="form-input form-select" id="habitFreq">
+                            <option value="daily">Daily</option>
+                            <option value="weekdays">Weekdays Only</option>
+                            <option value="weekends">Weekends Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reminder Time (optional)</label>
+                    <input type="time" class="form-input" id="habitReminder" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" id="modalCancel">Cancel</button>
+                <button class="btn-primary" id="modalSave">Save Habit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
+        <div class="modal modal-sm" id="deleteModalBox">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Habit?</h2>
+                <button class="modal-close" id="deleteModalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--text-secondary)">This will permanently delete <strong id="deleteHabitName"
+                        style="color:var(--text-primary)"></strong> and all its history. This cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" id="deleteCancelBtn">Cancel</button>
+                <button class="btn-danger" id="deleteConfirmBtn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
